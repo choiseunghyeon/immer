@@ -1,33 +1,46 @@
-<img src="images/immer-logo.svg" height="200px" align="right"/>
+# Immer 분석
 
-# Immer
+## This repo is for studying immer library
 
-[![npm](https://img.shields.io/npm/v/immer.svg)](https://www.npmjs.com/package/immer) [![Build Status](https://travis-ci.org/immerjs/immer.svg?branch=master)](https://travis-ci.org/immerjs/immer) [![Coverage Status](https://coveralls.io/repos/github/mweststrate/immer/badge.svg?branch=master)](https://coveralls.io/github/mweststrate/immer?branch=master) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier) [![OpenCollective](https://opencollective.com/immer/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/immer/sponsors/badge.svg)](#sponsors) [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/immerjs/immer)
+관련 정보
 
-_Create the next immutable state tree by simply modifying the current tree_
+- COW(Copy on Write)
+- Proxy, getter, setter
+- Symbol
+- Structual sharing
+- Freeze
 
-Winner of the "Breakthrough of the year" [React open source award](https://osawards.com/react/) and "Most impactful contribution" [JavaScript open source award](https://osawards.com/javascript/) in 2019
+<div>
+    <img src="./images/cow.png" width="30%"></img>
+    <p>
+        A, B 프로세스가 Resource를 공유하고 있습니다.
+        <br />
+        만일 A 프로세스가 Resource의 내용을 수정한다면
+        <br />
+        이를 사용하고 있는 B 프로세스에도 영향이 가게됩니다.
+    </p>
+</div>
+<div>
+    <img src="./images/cow2.png" width="28%"></img>
+    <p>
+        따라서 이런 경우를 방지하기 위해 쓰기를 수행해야 한다면
+        <br/>
+        A 프로세스에서는 Resoucre의 복사본을 만들어서 사용 한다는게 COW입니다
+    </p>
+</div>
+<br />
+immer 분석 Proxy pattern 이용
 
-## Contribute using one-click online setup
+기본적으로 Javascript built-in 함수들을 사용중 Proxy나 Array.prototype.slice(얕은 복사 용도)를 사용중
 
-You can use Gitpod (a free online VS Code like IDE) for contributing online. With a single click it will launch a workspace and automatically:
+base와 nextState는 공유 구조를 가지고 있다. 변경되는 부분은 새로 만들지만 변경되지 않는 부분은 서로 공유하고 있다.
 
-- clone the immer repo.
-- install the dependencies.
-- run `yarn run start`.
+맨 처음 base에 대한 proxy를 만들고 이에 대한 변경이 일어나면 proxy가 내부적으로 변경이 일어나는 애의 또 다른 proxy를 만들면서 진행즉 필요한 애들만 얕은 복사와 proxy를 이용해서 값을 업데이트 중
 
-so that you can start coding straight away.
+참고 사이트
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/from-referrer/)
-
-## Documentation
-
-The documentation of this package is hosted at https://immerjs.github.io/immer/
-
-## Support
-
-Did Immer make a difference to your project? Join the open collective at https://opencollective.com/immer!
-
-## Release notes
-
-https://github.com/immerjs/immer/releases
+- talkingaboutme.tistory.com/entry/Study-Copy-On-Write-COW // COW
+- www.youtube.com/watch?v=PljDdK3uT_Q&t=2042s // immer 분석
+- hacks.mozilla.or.kr/2016/03/es6-in-depth-proxies-and-reflect/ // Proxy
+- www.ecma-international.org/ecma-262/6.0/index.html#table-5 // js spec
+- https://github.com/microsoft/vscode-recipes/tree/master/debugging-jest-tests // jest test debugger setting

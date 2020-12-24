@@ -95,5 +95,8 @@
     "typescript": "^3.9.3",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "jest-cli": "^26.6.3"
   }
 }
